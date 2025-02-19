@@ -23,7 +23,8 @@ userRouter.get("/user/requests/received", userAuth, async (req, res) => {
       data: connectionRequests,
     });
   } catch (err) {
-    req.statusCode(400).send("ERROR: " + err.message);
+    // req.statusCode(400).send("ERROR: " + err.message);
+    res.status(400).json({ message: err.message });
   }
 });
 
@@ -64,6 +65,7 @@ userRouter.get("/feed", userAuth, async (req, res) => {
     limit = limit > 50 ? 50 : limit;
     const skip = (page - 1) * limit;
 
+    // find all connection requests (sent + recieved)
     const connectionRequests = await ConnectionRequest.find({
       $or: [{ fromUserId: loggedInUser._id }, { toUserId: loggedInUser._id }],
     }).select("fromUserId  toUserId");
